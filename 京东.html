@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		input{
+			width: 300px;
+			height: 30px;
+			font-size: 14px;
+			color: #000;
+			margin-left: 30%;
+			margin-top:20px;
+			display: inline;
+		}
+		#inp{
+			width: 305px;
+			height: 40px;
+			font-size: 14px;
+			color: #000;
+			margin-left: 30%;
+			margin-top:20px;
+			background: #e52325;
+			border:none;
+			display: inline;
+		}
+		span{
+			
+			display: none;
+		}
+		#span{
+			color: #968f7e;
+			position: absolute;
+			right:320px;
+			top: 34px;
+		}
+		#span1{
+			position: absolute;
+			top:90px;
+			right:190px;
+			color: #968f7e;
+		}
+		#span2{
+			color: #968f7e;
+			position: absolute;
+			top:200px;
+			right:434px;
+		}
+		#span3{
+			position: absolute;
+			top:150px;
+			right:390px;
+			color: #968f7e;
+		}
+	</style>
+</head>
+<body>
+	<form>
+		<input type="text" name="" placeholder="用户名" id="userID">
+		<span id="span">请输入中文英文数字，- _ 4 ~ 20位</span>
+		<input type="text" name="" placeholder="设置密码" id="pw">
+		<span id="span1">建议使用英文数字两种以上字符的组合; 6 ~ 20个字符</span>
+		<input type="text" name="" placeholder="确认密码" id="queren">
+		<span id="span3">与上次输入的密码不一致</span>
+		<input type="text" name="" placeholder="邮箱验证" id="emile">
+		<span id="span2">数字字母特殊符号</span>
+		<input type="submit" name="" placeholder="邮箱验证号" id="inp">
+	</form>
+
+	<script type="text/javascript">
+		//设置必填选项
+		function $(selector){
+			return document.getElementById(selector);
+		}
+
+		var JSON = {
+			username:{
+				el:$("userID"),
+				reg:/^[\u4e00-\u9fa5a-z0-9\-_]{4,20}$/i,
+				hasVaild:false
+			},
+			password:{
+				el:$("pw"),
+				reg:/^[a-z0-9\u0021-\u002f]{6,20}$/i,
+				hasVaild:false
+			},
+			emile:{
+				el:$("emile"),
+				reg:/\w{6,20}@[a-z0-9]{2,6}\.[a-z]{2,6}/,
+				hasVaild:false
+			},
+			confirm:{
+				el:$("queren"),
+				reg:/^[a-z0-9\u0021-\u002f]{6,20}$/i,
+				hasVaild:false
+			}
+		}
+
+			//验证用户名
+			var userEle = JSON.username.el;
+			var userReg = JSON.username.reg;
+			var ospan = document.getElementsByTagName("span")
+			userEle.onblur = function(){
+				var ovalue = this.value;
+				if(!userReg.test(ovalue)){
+				ospan[0].style.display ="block";
+				userEle.style.border="1px solid red";
+				JSON.username.hasVaild = false;
+			}else{
+				userEle.style.border="1px solid blue";
+				ospan[0].style.display ="none";
+				JSON.username.hasVaild = true;
+			}
+		}
+
+
+			//验证密码
+			var pwel = JSON.password.el;
+			var pwreg = JSON.password.reg;
+			var ospan = document.getElementsByTagName("span");
+			pwel.onblur = function(){
+			var pwvalue = this.value;
+			if(!pwreg.test(pwvalue)){
+				ospan[1].style.display = "block";
+				pwel.style.border = "1px solid red";
+				JSON.password.hasVaild = false;
+			}else{
+				pwel.style.border = "1px solid blue";
+				ospan[1].style.display = "none";
+				JSON.password.hasVaild = true;
+				strengthpw(this,pwvalue)
+			}
+		}
+			//确认密码
+			var confirmel = JSON.confirm.el;
+			var confirmreg = JSON.confirm.reg;
+			confirmel.onblur = function(){
+				var confirmvalue = this.value;
+				if(confirmvalue!= pwel.value){
+					ospan[2].style.display="block";
+					confirmel.style.border = "1px solid red";
+					JSON.confirm.hasVaild = false;
+				}else{
+					ospan[2].style.display="none";
+					confirmel.style.border = "1px solid blue";
+					JSON.confirm.hasVaild = true;
+				}
+			}
+
+			//邮箱验证
+			var emileel = JSON.emile.el;
+			var emilereg = JSON.emile.reg;
+			emileel.onblur = function(){
+				var emilevalue = this.value;
+				if(!emilereg.test(emilevalue)){
+					ospan[3].style.display = "block"
+					emileel.style.border = "1px solid red";
+					JSON.emile.hasVaild = "false";
+				}else{
+					ospan[3].style.display = "none"
+					emileel.style.border = "1px solid blue";
+					JSON.emile.hasVaild = "true";
+				}			
+			}
+
+			//提交点击事件
+			var osubmit = document.getElementById("inp")
+			osubmit.onclick = function(event){
+				var evt = event || window.event;
+				for(var arr in JSON){
+					if (!JSON[arr].hasVaild){
+						console.log(JSON[arr].hasVaild)
+						evt.preventDefault();
+						break;
+					}
+					
+				}
+			}
+
+			//密码强度；
+			function strengthpw(el,str){
+				var strength = 0;
+				if (/\d/g.test(str)) {
+					strength ++;
+				}
+				if (/[a-z]/g.test(str)) {
+					strength ++;
+				}
+				if (/[\u0021-\u002f]/g.test(str)) {
+					strength ++;
+				}
+
+				switch(strength){
+					case 1 :
+					el.style.color = "red";break;
+					case 2:
+					el.style.color = "pink";break;		
+					case 3:
+					el.style.color = "green";break;					
+					default:
+						el.style.color = "#fff";
+				}
+			}
+	</script>		
+</body>
+</html>
